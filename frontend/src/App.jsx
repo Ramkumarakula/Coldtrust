@@ -1,122 +1,170 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useEffect, useState, useCallback } from 'react';
+import Navbar from './components/Navbar';
+import KpiGrid from './components/KpiGrid';
+import ShipmentTable from './components/ShipmentTable';
+import CreateShipmentModal from './components/CreateShipmentModal';
+import TelemetryModal from './components/TelemetryModal';
+import AuditTimelineModal from './components/AuditTimelineModal';
 
-function App() {
-  const [count, setCount] = useState(0)
+const API_BASE = 'http://localhost:3000';
+
+export default function App() {
+  const [shipments, setShipments] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState('Manufacturer');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Modals state
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [selectedShipmentForTelemetry, setSelectedShipmentForTelemetry] = useState(null);
+  const [selectedShipmentForAudit, setSelectedShipmentForAudit] = useState(null);
+
+  // Fetch all shipments from REST API backend
+  const fetchShipments = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/shipments`);
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setShipments(json.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch shipments from backend API:', err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  // Initial fetch & 4-second auto-poll
+  useEffect(() => {
+    fetchShipments();
+    const interval = setInterval(fetchShipments, 4000);
+    return () => clearInterval(interval);
+  }, [fetchShipments]);
+
+  // Create Shipment Handler
+  const handleCreateShipment = async (formData) => {
+    const res = await fetch(`${API_BASE}/api/shipments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+    const json = await res.json();
+    if (!json.success) {
+      alert(`Error creating shipment: ${json.error?.message || 'Failed'}`);
+    } else {
+      fetchShipments();
+    }
+  };
+
+  // Accept Custody Handler (Transport Org)
+  const handleAcceptCustody = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/shipments/${id}/accept`, {
+        method: 'PUT',
+      });
+      const json = await res.json();
+      if (!json.success) {
+        alert(`Error accepting custody: ${json.error?.message}`);
+      } else {
+        fetchShipments();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Record Telemetry Handler
+  const handleRecordTelemetry = async (id, telemetryData) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/shipments/${id}/telemetry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(telemetryData),
+      });
+      const json = await res.json();
+      if (!json.success) {
+        alert(`Error recording telemetry: ${json.error?.message}`);
+      } else {
+        fetchShipments();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Receive Delivery Handler (Retailer Org)
+  const handleReceiveDelivery = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/shipments/${id}/receive`, {
+        method: 'PUT',
+      });
+      const json = await res.json();
+      if (!json.success) {
+        alert(`Error receiving shipment: ${json.error?.message}`);
+      } else {
+        fetchShipments();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Fetch History for Audit Modal
+  const fetchShipmentHistory = async (id) => {
+    const res = await fetch(`${API_BASE}/api/shipments/${id}/history`);
+    const json = await res.json();
+    if (json.success) {
+      return json.data;
+    }
+    return [];
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
+      {/* Top Navbar */}
+      <Navbar
+        selectedOrg={selectedOrg}
+        setSelectedOrg={setSelectedOrg}
+        onRefresh={fetchShipments}
+        onOpenCreateModal={() => setIsCreateOpen(true)}
+        isRefreshing={isRefreshing}
+      />
 
-      <div className="ticks"></div>
+      {/* KPI Cards Grid */}
+      <KpiGrid shipments={shipments} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {/* Main Logistics Shipment Table */}
+      <ShipmentTable
+        shipments={shipments}
+        selectedOrg={selectedOrg}
+        onInspectAudit={(s) => setSelectedShipmentForAudit(s)}
+        onAcceptCustody={handleAcceptCustody}
+        onSimulateTelemetry={(s) => setSelectedShipmentForTelemetry(s)}
+        onReceiveDelivery={handleReceiveDelivery}
+      />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Create Shipment Modal */}
+      <CreateShipmentModal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onSubmit={handleCreateShipment}
+      />
+
+      {/* Simulate IoT Telemetry Modal */}
+      <TelemetryModal
+        isOpen={!!selectedShipmentForTelemetry}
+        shipment={selectedShipmentForTelemetry}
+        onClose={() => setSelectedShipmentForTelemetry(null)}
+        onSubmit={handleRecordTelemetry}
+      />
+
+      {/* Audit History & Timeline Modal */}
+      <AuditTimelineModal
+        isOpen={!!selectedShipmentForAudit}
+        shipment={selectedShipmentForAudit}
+        onClose={() => setSelectedShipmentForAudit(null)}
+        fetchHistory={fetchShipmentHistory}
+      />
+    </div>
+  );
 }
-
-export default App
