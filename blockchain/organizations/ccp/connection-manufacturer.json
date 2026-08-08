@@ -1,0 +1,49 @@
+{
+  "name": "coldchain-network-manufacturer",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Manufacturer",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Manufacturer": {
+      "mspid": "ManufacturerMSP",
+      "peers": [
+        "peer0.manufacturer.coldchain.com"
+      ],
+      "certificateAuthorities": [
+        "ca.manufacturer.coldchain.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.manufacturer.coldchain.com": {
+      "url": "grpcs://localhost:7051",
+      "tlsCACerts": {
+        "pem": "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.manufacturer.coldchain.com",
+        "hostnameOverride": "peer0.manufacturer.coldchain.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.manufacturer.coldchain.com": {
+      "url": "https://localhost:7054",
+      "caName": "ca-manufacturer",
+      "tlsCACerts": {
+        "pem": ["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

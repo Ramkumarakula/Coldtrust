@@ -29,6 +29,7 @@ yarn-error.log*
 /blockchain/channel-artifacts/
 /blockchain/organizations/peerOrganizations/
 /blockchain/organizations/ordererOrganizations/
+/blockchain/channel/*.block
 /backend/wallet/
 /backend/wallet-store/
 *.id

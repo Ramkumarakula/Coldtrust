@@ -21,7 +21,8 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/channel/genesis.block
       - ORDERER_CHANNELPARTICIPATION_ENABLED=true
       - ORDERER_ADMIN_TLS_ENABLED=true
       - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -34,6 +35,7 @@ services:
     volumes:
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/msp:/var/hyperledger/orderer/msp
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls/:/var/hyperledger/orderer/tls
+      - ../channel:/var/hyperledger/channel
     ports:
       - "7050:7050"
       - "7053:7053"

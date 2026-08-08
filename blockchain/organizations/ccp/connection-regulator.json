@@ -1,0 +1,49 @@
+{
+  "name": "coldchain-network-regulator",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Regulator",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Regulator": {
+      "mspid": "RegulatorMSP",
+      "peers": [
+        "peer0.regulator.coldchain.com"
+      ],
+      "certificateAuthorities": [
+        "ca.regulator.coldchain.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.regulator.coldchain.com": {
+      "url": "grpcs://localhost:10051",
+      "tlsCACerts": {
+        "pem": "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.regulator.coldchain.com",
+        "hostnameOverride": "peer0.regulator.coldchain.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.regulator.coldchain.com": {
+      "url": "https://localhost:10054",
+      "caName": "ca-regulator",
+      "tlsCACerts": {
+        "pem": ["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

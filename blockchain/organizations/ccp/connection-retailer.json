@@ -1,0 +1,49 @@
+{
+  "name": "coldchain-network-retailer",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Retailer",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Retailer": {
+      "mspid": "RetailerMSP",
+      "peers": [
+        "peer0.retailer.coldchain.com"
+      ],
+      "certificateAuthorities": [
+        "ca.retailer.coldchain.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.retailer.coldchain.com": {
+      "url": "grpcs://localhost:9051",
+      "tlsCACerts": {
+        "pem": "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.retailer.coldchain.com",
+        "hostnameOverride": "peer0.retailer.coldchain.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.retailer.coldchain.com": {
+      "url": "https://localhost:9054",
+      "caName": "ca-retailer",
+      "tlsCACerts": {
+        "pem": ["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

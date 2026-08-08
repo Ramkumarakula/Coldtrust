@@ -21,6 +21,10 @@ function generateCrypto() {
 }
 
 function networkUp() {
+  if [ ! -f "${BLOCKCHAIN_DIR}/channel/genesis.block" ]; then
+    echo "Channel artifacts not found. Generating artifacts first..."
+    generateCrypto
+  fi
   echo "Bringing up ColdTrust Consortium Network containers (1 Orderer, 4 CAs, 4 Peers, 4 CouchDBs)..."
   cd "${BLOCKCHAIN_DIR}" || exit 1
   docker compose -f compose/docker-compose-net.yaml up -d

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Export helper functions to target specific Organization Peers
-export FABRIC_CFG_PATH="${PWD}/config"
+export FABRIC_CFG_PATH="/home/ramkumar/projects/fabric-samples/config"
 
 setGlobals() {
   USING_ORG=$1

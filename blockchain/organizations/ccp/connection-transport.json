@@ -1,0 +1,49 @@
+{
+  "name": "coldchain-network-transport",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Transport",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Transport": {
+      "mspid": "TransportMSP",
+      "peers": [
+        "peer0.transport.coldchain.com"
+      ],
+      "certificateAuthorities": [
+        "ca.transport.coldchain.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.transport.coldchain.com": {
+      "url": "grpcs://localhost:8051",
+      "tlsCACerts": {
+        "pem": "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.transport.coldchain.com",
+        "hostnameOverride": "peer0.transport.coldchain.com"
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca.transport.coldchain.com": {
+      "url": "https://localhost:8054",
+      "caName": "ca-transport",
+      "tlsCACerts": {
+        "pem": ["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]
+      },
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

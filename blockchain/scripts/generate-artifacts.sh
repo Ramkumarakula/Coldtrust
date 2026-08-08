@@ -6,20 +6,16 @@ export FABRIC_CFG_PATH="${PWD}/config"
 
 echo "=== 1. Generating Cryptographic Material using cryptogen ==="
 
-if [ -d "organizations/peerOrganizations" ]; then
-  rm -Rf organizations/peerOrganizations/*
+if [ ! -d "organizations/peerOrganizations" ]; then
+  cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
+  cryptogen generate --config=./organizations/cryptogen/crypto-config-manufacturer.yaml --output="organizations"
+  cryptogen generate --config=./organizations/cryptogen/crypto-config-transport.yaml --output="organizations"
+  cryptogen generate --config=./organizations/cryptogen/crypto-config-retailer.yaml --output="organizations"
+  cryptogen generate --config=./organizations/cryptogen/crypto-config-regulator.yaml --output="organizations"
+  echo "=== Cryptographic material generated successfully ==="
+else
+  echo "=== Cryptographic material already exists, reusing existing certificates ==="
 fi
-if [ -d "organizations/ordererOrganizations" ]; then
-  rm -Rf organizations/ordererOrganizations/*
-fi
-
-cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
-cryptogen generate --config=./organizations/cryptogen/crypto-config-manufacturer.yaml --output="organizations"
-cryptogen generate --config=./organizations/cryptogen/crypto-config-transport.yaml --output="organizations"
-cryptogen generate --config=./organizations/cryptogen/crypto-config-retailer.yaml --output="organizations"
-cryptogen generate --config=./organizations/cryptogen/crypto-config-regulator.yaml --output="organizations"
-
-echo "=== Cryptographic material generated successfully ==="
 
 echo "=== 2. Creating Channel Artifacts using configtxgen ==="
 
