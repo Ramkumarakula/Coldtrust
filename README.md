@@ -1,89 +1,138 @@
-# ColdTrust – Enterprise Global Cold Chain Network
+# ColdTrust — Enterprise Global Cold Chain Consortium Network
 
-![Hyperledger Fabric](https://img.shields.io/badge/Hyperledger_Fabric-v2.5.16-2F3136?style=for-the-badge&logo=hyperledger&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-v22.x-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![React](https://img.shields.io/badge/React-v19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Express](https://img.shields.io/badge/Express-v5.x-000000?style=for-the-badge&logo=express&logoColor=white)
-![CouchDB](https://img.shields.io/badge/CouchDB-v3.4-E0234E?style=for-the-badge&logo=apachecouchdb&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-v29.x-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+[![Hyperledger Fabric](https://img.shields.io/badge/Hyperledger_Fabric-v2.5.16-blue.svg)](https://www.hyperledger.org/use/fabric)
+[![Node.js](https://img.shields.io/badge/Node.js-v22.23.2-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-v19.2-cyan.svg)](https://react.dev/)
+[![Docker](https://img.shields.io/badge/Docker_Compose-v29.6-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-lightgrey.svg)](LICENSE)
 
-**ColdTrust** is a production-grade, decentralized enterprise cold chain management platform built on **Hyperledger Fabric 2.5**. It enables multi-organization supply chain consortium members—**Manufacturers**, **Transport Companies**, **Retailers / Hospitals**, and **Regulators**—to transparently track temperature-sensitive shipments, ingest real-time IoT sensor telemetry, enforce automated smart contract compromise rules, and maintain non-repudiable audit logs.
+**ColdTrust** is a production-grade enterprise blockchain platform demonstrating how multi-organization global cold chain logistics networks securely monitor, track, and enforce automated temperature compliance for temperature-sensitive cargo (pharmaceuticals, mRNA vaccines, biologics).
 
 ---
 
-## 🌟 Key Platform Capabilities
+## 🌟 Architecture & Network Overview
 
-- **Consortium Blockchain:** 4 distinct organizations (Manufacturer, Transport, Retailer, Regulator) with custom Certificate Authorities (CAs), Raft Orderer, and peer nodes.
-- **Automated Smart Contract Rule Engine:** Automatically marks shipments as `COMPROMISED` on the ledger if temperature exceeds **4.0°C**.
-- **CouchDB World State Indexing:** Supports rich queries for shipment status, carrier history, and asset custody.
-- **REST API Gateway:** Express.js service leveraging `@hyperledger/fabric-gateway` SDK with gRPC connection pooling and identity wallets.
-- **IoT Sensor Telemetry Simulator:** Continuously streams real-time temperature, humidity, and GPS coordinates.
-- **Enterprise Web Dashboard:** Modern React 19 visual dashboard with interactive metrics, audit trails, and live telemetry feeds.
+### 4-Organization Consortium Topology
+The ColdTrust network runs on **Hyperledger Fabric v2.5.16** across 13 healthy Docker containers:
 
----
-
-## 📁 Repository Directory Structure
-
-```
-Enterprise-Cold-Chain-Network/
-├── architecture/                 # System Architecture & Diagrams
-│   ├── ARCHITECTURE.md           # Layered Enterprise Architecture Specification
-│   └── DIAGRAMS.md               # Mermaid Diagrams (Consortium, State Machine, Sequence, ERD)
-├── backend/                      # Node.js Express REST API Gateway
-│   ├── package.json              # Backend Dependencies
-│   └── src/                      # API Controllers, Gateway SDK Client, Routes
-├── blockchain/                   # Hyperledger Fabric Network Artifacts
-│   ├── configtx.yaml             # Channel & Consortium Profile Configurations
-│   └── docker/                   # Docker Compose Services for Orderer, Peers, CAs, CouchDB
-├── chaincode/                    # Hyperledger Fabric Smart Contracts
-│   └── shipment/                 # Go / Node Chaincode Data Models & Logic
-├── docker/                       # Infrastructure Docker compose overrides
-├── docs/                         # Technical Specifications & Documentation
-│   ├── SRS.md                    # Software Requirements Specification
-│   ├── CHAINCODE_SPECIFICATION.md# Smart Contract Technical Specification
-│   ├── API_SPECIFICATION.md      # OpenAPI/Swagger REST API Specification
-│   ├── ROADMAP.md                # Development Roadmap & Milestone Tracker
-│   ├── DEPLOYMENT_GUIDE.md       # Step-by-Step Local Deployment Guide
-│   └── TESTING_GUIDE.md          # Multi-Level Testing Strategy Guide
-├── frontend/                     # React 19 + Vite + TailwindCSS Web Application
-│   ├── package.json              # Frontend Dependencies
-│   └── src/                      # React Components, Dashboard Pages, State Management
-├── scripts/                      # Shell Scripts for Network Bring-Up & Channel Lifecycle
-├── simulator/                    # Background IoT Telemetry Stream Generator
-└── tests/                        # Automated Unit, Integration & E2E Test Suites
+```text
+                               ┌───────────────────────────┐
+                               │  OrdererOrg (Raft Orderer)│
+                               │  orderer.coldchain.com    │
+                               └─────────────┬─────────────┘
+                                             │
+      ┌──────────────────────┬───────────────┴───────────────┬──────────────────────┐
+      │                      │                               │                      │
+┌─────▼──────────────┐ ┌─────▼──────────────┐ ┌──────────────▼──────┐ ┌──────────────▼──────┐
+│ ManufacturerMSP    │ │ TransportMSP       │ │ RetailerMSP         │ │ RegulatorMSP        │
+│ manufacturer.com   │ │ transport.com      │ │ retailer.com        │ │ regulator.com       │
+├────────────────────┤ ├────────────────────┤ ├─────────────────────┤ ├─────────────────────┤
+│ • peer0.manuf:7051 │ │ • peer0.trans:8051 │ │ • peer0.ret:9051    │ │ • peer0.reg:10051   │
+│ • CouchDB (5984)   │ │ • CouchDB (6984)   │ │ • CouchDB (7984)    │ │ • CouchDB (8984)    │
+│ • CA (7054)        │ │ • CA (8054)        │ │ • CA (9054)         │ │ • CA (10054)        │
+└────────────────────┘ └────────────────────┘ └─────────────────────┘ └─────────────────────┘
 ```
 
 ---
 
-## 📚 Technical Documentation Index
+## ⚡ Core Business Features & Automated Rule Engine
 
-Detailed architectural specifications are available in the repository:
-1. **[Software Requirements Specification (SRS)](docs/SRS.md)**
-2. **[System Architecture Specification](architecture/ARCHITECTURE.md)**
-3. **[Architecture Diagrams & Flowcharts](architecture/DIAGRAMS.md)**
-4. **[Smart Contract Technical Specification](docs/CHAINCODE_SPECIFICATION.md)**
-5. **[REST API Specification](docs/API_SPECIFICATION.md)**
-6. **[Development Roadmap](docs/ROADMAP.md)**
-7. **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)**
-8. **[Testing Guide](docs/TESTING_GUIDE.md)**
+1. **Automated Temperature Breach Rule Engine**:
+   - Chaincode enforces strict temperature limits (`minTemp` to `maxTemp`).
+   - If an IoT sensor logs `temperature > maxTemp` (e.g. `5.6°C > 4.0°C`), the smart contract instantly and immutably transitions shipment status to **`COMPROMISED`**.
+   - Status `COMPROMISED` is permanent and can **never** revert to `SAFE`, `IN_TRANSIT`, or `DELIVERED`.
+
+2. **Strict Layered Backend Service** (`backend/`):
+   - **TypeScript** throughout.
+   - **Layered Architecture**: `Client ──► Routes ──► Controllers ──► Services ──► Repositories ──► Fabric Gateway ──► Blockchain`.
+   - **Zod Validation** schemas for all inputs.
+   - **Winston Structured Logging** (`logs/application.log` and `logs/error.log`).
+   - **Interactive Swagger UI**: Hosted at `http://localhost:3000/api-docs`.
+
+3. **Logistics Operations Dashboard** (`frontend/`):
+   - React 19 + Vite dashboard styled for enterprise logistics operators.
+   - KPI metrics grid, live status badges, organization switcher, audit timeline drawer, and IoT sensor telemetry simulator.
+
+4. **Real-Time IoT Telemetry Simulator** (`simulator/`):
+   - Simulates streaming GPS coordinates, humidity, ambient temperature, and automated breach spikes every 5 seconds.
 
 ---
 
-## ⚡ Quick Start (Local Development)
+## 🛠️ Quick Start & Local Execution
 
+### 1. Network Requirements
+- Linux / WSL2 Ubuntu
+- Node.js `v20.x` or `v22.x`
+- Docker Engine `v24+` & Docker Compose
+
+### 2. Boot Blockchain Consortium Network
 ```bash
-# 1. Clone Repository & Navigate to Workspace
-cd Enterprise-Cold-Chain-Network
+cd blockchain
+./network.sh up createChannel -c coldchain-channel
+./scripts/deployCC.sh
+```
 
-# 2. Review Specifications
-cat docs/SRS.md
+### 3. Start Backend REST API Service
+```bash
+cd backend
+npm install
+npm run build
+npm start
+```
+- API Health Check: `curl http://localhost:3000/health`
+- Swagger UI Documentation: `http://localhost:3000/api-docs`
 
-# 3. Network bring-up (Available starting Milestone 3)
-./scripts/network-up.sh
+### 4. Launch Logistics Operations Dashboard
+```bash
+cd frontend
+npm install
+npm run dev
+```
+- Open Dashboard in Browser: `http://localhost:5173`
+
+### 5. Launch Real-Time IoT Telemetry Simulator
+```bash
+cd simulator
+npm install
+npm start
 ```
 
 ---
 
-## 🛡️ License & Governance
-Licensed under the [Apache License 2.0](LICENSE). Engineered as an enterprise portfolio demonstration.
+## 🧪 End-to-End Test Suite Verification
+
+Run the automated 6-step consortium integration test:
+```bash
+cd backend
+npx ts-node ../scripts/e2eTest.ts
+```
+
+```text
+====================================================
+🚀 COLDTRUST END-TO-END CONSORTIUM SCENARIO TEST
+====================================================
+1️⃣  [ManufacturerMSP] Creating Shipment Asset SHIP-E2E-8971... Status: CREATED
+2️⃣  [TransportMSP] Accepting Custody of SHIP-E2E-8971... Status: IN_TRANSIT
+3️⃣  [IoT Sensor] Streaming Normal Telemetry (3.1°C)... Status: IN_TRANSIT
+4️⃣  [IoT Sensor] Transmitting Temperature Spike (5.8°C > 4.0°C)... 🚨 LEDGER STATUS: COMPROMISED
+5️⃣  [RetailerMSP] Receiving Shipment at Hospital... Status: COMPROMISED
+6️⃣  [RegulatorMSP] Auditing Cryptographic Ledger History... Found 5 block commits.
+
+✅ END-TO-END CONSORTIUM SCENARIO TEST PASSED 100%!
+```
+
+---
+
+## 🚀 Version 2.0 Roadmap & Future Enhancements
+
+- [ ] **Role-Based Access Control (RBAC)**: JWT authentication & OAuth2 integration with MSP certificate identity binding.
+- [ ] **Real IoT Gateway Integration**: Native MQTT / CoAP protocol broker for physical cellular cold-chain hardware.
+- [ ] **Hyperledger Explorer**: Embedded web block explorer for channel monitoring.
+- [ ] **Metrics & Alerting**: Prometheus & Grafana dashboard for peer gRPC latency and container CPU/memory tracking.
+- [ ] **Kubernetes Deployment**: Helm charts for multi-cloud enterprise production deployment.
+- [ ] **Mobile Operations App**: React Native mobile app for carrier barcode scanning at pickup and drop-off.
+
+---
+
+## 📄 License
+Licensed under the [Apache License, Version 2.0](LICENSE).
