@@ -37,6 +37,7 @@ services:
       - ../organizations/peerOrganizations/manufacturer.coldchain.com/peers/peer0.manufacturer.coldchain.com/msp:/etc/hyperledger/fabric/msp
       - ../organizations/peerOrganizations/manufacturer.coldchain.com/peers/peer0.manufacturer.coldchain.com/tls:/etc/hyperledger/fabric/tls
       - ../organizations/peerOrganizations/manufacturer.coldchain.com/users:/etc/hyperledger/fabric/users
+      - ../organizations/peerOrganizations:/etc/hyperledger/fabric/organizations/peerOrganizations
       - ../channel:/etc/hyperledger/fabric/channel
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls:/etc/hyperledger/fabric/orderer/tls
     ports:
@@ -76,6 +77,7 @@ services:
       - ../organizations/peerOrganizations/transport.coldchain.com/peers/peer0.transport.coldchain.com/msp:/etc/hyperledger/fabric/msp
       - ../organizations/peerOrganizations/transport.coldchain.com/peers/peer0.transport.coldchain.com/tls:/etc/hyperledger/fabric/tls
       - ../organizations/peerOrganizations/transport.coldchain.com/users:/etc/hyperledger/fabric/users
+      - ../organizations/peerOrganizations:/etc/hyperledger/fabric/organizations/peerOrganizations
       - ../channel:/etc/hyperledger/fabric/channel
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls:/etc/hyperledger/fabric/orderer/tls
     ports:
@@ -115,6 +117,7 @@ services:
       - ../organizations/peerOrganizations/retailer.coldchain.com/peers/peer0.retailer.coldchain.com/msp:/etc/hyperledger/fabric/msp
       - ../organizations/peerOrganizations/retailer.coldchain.com/peers/peer0.retailer.coldchain.com/tls:/etc/hyperledger/fabric/tls
       - ../organizations/peerOrganizations/retailer.coldchain.com/users:/etc/hyperledger/fabric/users
+      - ../organizations/peerOrganizations:/etc/hyperledger/fabric/organizations/peerOrganizations
       - ../channel:/etc/hyperledger/fabric/channel
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls:/etc/hyperledger/fabric/orderer/tls
     ports:
@@ -154,6 +157,7 @@ services:
       - ../organizations/peerOrganizations/regulator.coldchain.com/peers/peer0.regulator.coldchain.com/msp:/etc/hyperledger/fabric/msp
       - ../organizations/peerOrganizations/regulator.coldchain.com/peers/peer0.regulator.coldchain.com/tls:/etc/hyperledger/fabric/tls
       - ../organizations/peerOrganizations/regulator.coldchain.com/users:/etc/hyperledger/fabric/users
+      - ../organizations/peerOrganizations:/etc/hyperledger/fabric/organizations/peerOrganizations
       - ../channel:/etc/hyperledger/fabric/channel
       - ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls:/etc/hyperledger/fabric/orderer/tls
     ports:
