@@ -3,8 +3,13 @@ import { ZodError } from 'zod';
 import { logger } from '../config/logger';
 import { sendError } from '../utils/response';
 
+export interface AppError extends Error {
+  code?: string;
+  statusCode?: number;
+}
+
 export const errorHandler = (
-  err: any,
+  err: AppError | ZodError | Error,
   _req: Request,
   res: Response,
   _next: NextFunction
@@ -21,9 +26,10 @@ export const errorHandler = (
     );
   }
 
-  const message = err.message || 'An unexpected internal server error occurred';
-  const code = err.code || 'INTERNAL_SERVER_ERROR';
-  const statusCode = err.statusCode || 500;
+  const appErr = err as AppError;
+  const message = appErr.message || 'An unexpected internal server error occurred';
+  const code = appErr.code || 'INTERNAL_SERVER_ERROR';
+  const statusCode = appErr.statusCode || 500;
 
   return sendError(res, message, code, statusCode);
 };

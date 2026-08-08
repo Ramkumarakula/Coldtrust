@@ -3,7 +3,12 @@ import { logger } from '../config/logger';
 
 const BASE_URL = 'http://localhost:3000';
 
-const makeRequest = (method: string, path: string, body?: any): Promise<any> => {
+interface TestHttpResponse<T = unknown> {
+  status: number;
+  data: T;
+}
+
+const makeRequest = <T = unknown>(method: string, path: string, body?: unknown): Promise<TestHttpResponse<T>> => {
   return new Promise((resolve, reject) => {
     const url = new URL(BASE_URL + path);
     const options: http.RequestOptions = {
@@ -22,9 +27,9 @@ const makeRequest = (method: string, path: string, body?: any): Promise<any> => 
       res.on('end', () => {
         try {
           const parsed = JSON.parse(data);
-          resolve({ status: res.statusCode, data: parsed });
+          resolve({ status: res.statusCode || 500, data: parsed as T });
         } catch {
-          resolve({ status: res.statusCode, data });
+          resolve({ status: res.statusCode || 500, data: data as unknown as T });
         }
       });
     });
@@ -44,15 +49,15 @@ async function runTests() {
     // 1. Health Checks
     logger.info('Testing GET /health ...');
     const health = await makeRequest('GET', '/health');
-    console.log('Health:', JSON.stringify(health, null, 2));
+    logger.info(`Health: ${JSON.stringify(health, null, 2)}`);
 
     logger.info('Testing GET /health/blockchain ...');
     const bcHealth = await makeRequest('GET', '/health/blockchain');
-    console.log('Blockchain Health:', JSON.stringify(bcHealth, null, 2));
+    logger.info(`Blockchain Health: ${JSON.stringify(bcHealth, null, 2)}`);
 
     logger.info('Testing GET /health/database ...');
     const dbHealth = await makeRequest('GET', '/health/database');
-    console.log('Database Health:', JSON.stringify(dbHealth, null, 2));
+    logger.info(`Database Health: ${JSON.stringify(dbHealth, null, 2)}`);
 
     // 2. Create Shipment
     const testShipmentID = `SHIP-REST-${Date.now().toString().slice(-4)}`;
@@ -66,12 +71,12 @@ async function runTests() {
       minTemp: 2.0,
       maxTemp: 4.0,
     });
-    console.log('Create Response:', JSON.stringify(createRes, null, 2));
+    logger.info(`Create Response: ${JSON.stringify(createRes, null, 2)}`);
 
     // 3. Accept Shipment
     logger.info(`Testing PUT /api/shipments/${testShipmentID}/accept ...`);
     const acceptRes = await makeRequest('PUT', `/api/shipments/${testShipmentID}/accept`);
-    console.log('Accept Response:', JSON.stringify(acceptRes, null, 2));
+    logger.info(`Accept Response: ${JSON.stringify(acceptRes, null, 2)}`);
 
     // 4. Record Telemetry with Temperature Spike (5.6°C > 4.0°C)
     logger.info(`Testing POST /api/shipments/${testShipmentID}/telemetry (Spike 5.6°C) ...`);
@@ -80,22 +85,22 @@ async function runTests() {
       humidity: 42.5,
       location: 'Highway I-95, Km 140',
     });
-    console.log('Telemetry Response (Breach Expected):', JSON.stringify(telemetryRes, null, 2));
+    logger.info(`Telemetry Response (Breach Expected): ${JSON.stringify(telemetryRes, null, 2)}`);
 
     // 5. Query Single Shipment
     logger.info(`Testing GET /api/shipments/${testShipmentID} ...`);
     const getRes = await makeRequest('GET', `/api/shipments/${testShipmentID}`);
-    console.log('Get Shipment State:', JSON.stringify(getRes, null, 2));
+    logger.info(`Get Shipment State: ${JSON.stringify(getRes, null, 2)}`);
 
     // 6. Query History
     logger.info(`Testing GET /api/shipments/${testShipmentID}/history ...`);
     const historyRes = await makeRequest('GET', `/api/shipments/${testShipmentID}/history`);
-    console.log('Get Shipment History:', JSON.stringify(historyRes, null, 2));
+    logger.info(`Get Shipment History: ${JSON.stringify(historyRes, null, 2)}`);
 
     // 7. Query All
     logger.info('Testing GET /api/shipments ...');
-    const getAllRes = await makeRequest('GET', '/api/shipments');
-    console.log('Get All Shipments Count:', getAllRes.data?.data?.length);
+    const getAllRes = await makeRequest<any>('GET', '/api/shipments');
+    logger.info(`Get All Shipments Count: ${getAllRes.data?.data?.length}`);
 
     logger.info('=== ALL REST API INTEGRATION TESTS PASSED CLEANLY! ===');
   } catch (error) {

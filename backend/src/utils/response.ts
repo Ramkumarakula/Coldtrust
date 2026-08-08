@@ -14,14 +14,14 @@ export const sendError = (
   message: string,
   code = 'INTERNAL_SERVER_ERROR',
   statusCode = 500,
-  details?: any
+  details?: unknown
 ): Response => {
   const response: ApiResponse = {
     success: false,
     error: {
       code,
       message,
-      ...(details && { details }),
+      ...(details !== undefined && { details }),
     },
   };
   return res.status(statusCode).json(response);

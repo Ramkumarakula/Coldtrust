@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import { connect, Contract, Identity, Signer, signers } from '@hyperledger/fabric-gateway';
+import { connect, Contract, Identity, Signer, signers, Gateway } from '@hyperledger/fabric-gateway';
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -9,6 +9,7 @@ import { logger } from '../config/logger';
 class FabricGateway {
   private contract: Contract | null = null;
   private client: grpc.Client | null = null;
+  private gateway: Gateway | null = null;
 
   public async getContract(): Promise<Contract> {
     if (this.contract) {
@@ -25,13 +26,13 @@ class FabricGateway {
       const identity = await this.newIdentity();
       const signer = await this.newSigner();
 
-      const gateway = connect({
+      this.gateway = connect({
         client: this.client,
         identity,
         signer,
       });
 
-      const network = gateway.getNetwork(fabricConfig.channelName);
+      const network = this.gateway.getNetwork(fabricConfig.channelName);
       this.contract = network.getContract(fabricConfig.chaincodeName);
       logger.info(`Successfully connected to Fabric Gateway: channel=${fabricConfig.channelName}, chaincode=${fabricConfig.chaincodeName}`);
       return this.contract;
@@ -69,6 +70,19 @@ class FabricGateway {
     } catch {
       return false;
     }
+  }
+
+  public close(): void {
+    if (this.gateway) {
+      this.gateway.close();
+      this.gateway = null;
+    }
+    if (this.client) {
+      this.client.close();
+      this.client = null;
+    }
+    this.contract = null;
+    logger.info('Fabric Gateway and gRPC client resources released cleanly');
   }
 }
 
