@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: ColdTrust Enterprise Cold Chain Network API
+  version: 1.0.0
+  description: Production-grade REST API backend connecting to Hyperledger Fabric Consortium Network.
+servers:
+  - url: http://localhost:3000
+    description: Local Development Server
+
+paths:
+  /health:
+    get:
+      summary: Get System Health
+      responses:
+        '200':
+          description: System health status
+  /health/blockchain:
+    get:
+      summary: Get Hyperledger Fabric Blockchain Health
+      responses:
+        '200':
+          description: Fabric Gateway connection status
+  /health/database:
+    get:
+      summary: Get CouchDB Database Health
+      responses:
+        '200':
+          description: CouchDB connection status
+
+  /api/shipments:
+    post:
+      summary: Create a new cold chain shipment (Manufacturer Only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - shipmentID
+                - productName
+                - manufacturer
+                - carrier
+                - recipient
+              properties:
+                shipmentID:
+                  type: string
+                  example: SHIP-1001
+                productName:
+                  type: string
+                  example: COVID-19 Vaccine Vials
+                manufacturer:
+                  type: string
+                  example: BioTechLabs
+                carrier:
+                  type: string
+                  example: SwiftLogistics
+                recipient:
+                  type: string
+                  example: MetroHospital
+                minTemp:
+                  type: number
+                  example: 2.0
+                maxTemp:
+                  type: number
+                  example: 4.0
+      responses:
+        '201':
+          description: Shipment created successfully
+    get:
+      summary: Query all shipments from ledger
+      responses:
+        '200':
+          description: Array of shipments
+
+  /api/shipments/{id}:
+    get:
+      summary: Get shipment details by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          example: SHIP-1001
+      responses:
+        '200':
+          description: Shipment asset details
+
+  /api/shipments/{id}/accept:
+    put:
+      summary: Accept physical custody of shipment (Transport Org)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Custody accepted
+
+  /api/shipments/{id}/telemetry:
+    post:
+      summary: Record IoT Telemetry (Triggers automated compromise rule if temp > maxTemp)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - temperature
+                - humidity
+                - location
+              properties:
+                temperature:
+                  type: number
+                  example: 5.2
+                humidity:
+                  type: number
+                  example: 45.0
+                location:
+                  type: string
+                  example: Warehouse B, Dock 4
+      responses:
+        '200':
+          description: Telemetry logged
+
+  /api/shipments/{id}/receive:
+    put:
+      summary: Receive shipment at final destination (Retailer Org)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shipment delivered
+
+  /api/shipments/{id}/history:
+    get:
+      summary: Get complete audit history trail for shipment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array of transaction history records
