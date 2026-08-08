@@ -1,0 +1,223 @@
+---
+################################################################################
+#
+#   ORGANIZATIONS
+#
+################################################################################
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: ../organizations/ordererOrganizations/coldchain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+        OrdererEndpoints:
+            - orderer.coldchain.com:7050
+
+    - &ManufacturerOrg
+        Name: ManufacturerMSP
+        ID: ManufacturerMSP
+        MSPDir: ../organizations/peerOrganizations/manufacturer.coldchain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('ManufacturerMSP.admin', 'ManufacturerMSP.peer', 'ManufacturerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('ManufacturerMSP.admin', 'ManufacturerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('ManufacturerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('ManufacturerMSP.peer')"
+
+    - &TransportOrg
+        Name: TransportMSP
+        ID: TransportMSP
+        MSPDir: ../organizations/peerOrganizations/transport.coldchain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('TransportMSP.admin', 'TransportMSP.peer', 'TransportMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('TransportMSP.admin', 'TransportMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('TransportMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('TransportMSP.peer')"
+
+    - &RetailerOrg
+        Name: RetailerMSP
+        ID: RetailerMSP
+        MSPDir: ../organizations/peerOrganizations/retailer.coldchain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('RetailerMSP.admin', 'RetailerMSP.peer', 'RetailerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('RetailerMSP.admin', 'RetailerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('RetailerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('RetailerMSP.peer')"
+
+    - &RegulatorOrg
+        Name: RegulatorMSP
+        ID: RegulatorMSP
+        MSPDir: ../organizations/peerOrganizations/regulator.coldchain.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('RegulatorMSP.admin', 'RegulatorMSP.peer', 'RegulatorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('RegulatorMSP.admin', 'RegulatorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('RegulatorMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('RegulatorMSP.peer')"
+
+################################################################################
+#
+#   CAPABILITIES
+#
+################################################################################
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+################################################################################
+#
+#   APPLICATION
+#
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+    Policies:
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#
+#   ORDERER
+#
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer.coldchain.com:7050
+    EtcdRaft:
+        Consenters:
+            - Host: orderer.coldchain.com
+              Port: 7050
+              ClientTLSCert: ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls/server.crt
+              ServerTLSCert: ../organizations/ordererOrganizations/coldchain.com/orderers/orderer.coldchain.com/tls/server.crt
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 100
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+################################################################################
+#
+#   CHANNEL
+#
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#
+#   PROFILES
+#
+################################################################################
+Profiles:
+    FourOrgsOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            ColdChainConsortium:
+                Organizations:
+                    - *ManufacturerOrg
+                    - *TransportOrg
+                    - *RetailerOrg
+                    - *RegulatorOrg
+
+    ColdChainChannel:
+        Consortium: ColdChainConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ManufacturerOrg
+                - *TransportOrg
+                - *RetailerOrg
+                - *RegulatorOrg
+            Capabilities:
+                <<: *ApplicationCapabilities

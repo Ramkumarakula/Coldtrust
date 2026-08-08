@@ -1,0 +1,11 @@
+PeerOrgs:
+  - Name: Manufacturer
+    Domain: manufacturer.coldchain.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - peer0.manufacturer.coldchain.com
+    Users:
+      Count: 1

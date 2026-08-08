@@ -1,0 +1,12 @@
+name: coldchain_network
+
+include:
+  - docker-compose-ca.yaml
+  - docker-compose-couch.yaml
+  - docker-compose-orderer.yaml
+  - docker-compose-peers.yaml
+
+networks:
+  coldchain_net:
+    name: coldchain_net
+    driver: bridge

@@ -1,0 +1,50 @@
+name: coldchain_couch
+
+networks:
+  coldchain_net:
+    name: coldchain_net
+
+services:
+  couchdb0:
+    container_name: couchdb0
+    image: couchdb:3.4.2
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "5984:5984"
+    networks:
+      - coldchain_net
+
+  couchdb1:
+    container_name: couchdb1
+    image: couchdb:3.4.2
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "6984:5984"
+    networks:
+      - coldchain_net
+
+  couchdb2:
+    container_name: couchdb2
+    image: couchdb:3.4.2
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "7984:5984"
+    networks:
+      - coldchain_net
+
+  couchdb3:
+    container_name: couchdb3
+    image: couchdb:3.4.2
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "8984:5984"
+    networks:
+      - coldchain_net

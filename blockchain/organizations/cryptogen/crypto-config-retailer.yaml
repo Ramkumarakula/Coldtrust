@@ -1,0 +1,11 @@
+PeerOrgs:
+  - Name: Retailer
+    Domain: retailer.coldchain.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - peer0.retailer.coldchain.com
+    Users:
+      Count: 1

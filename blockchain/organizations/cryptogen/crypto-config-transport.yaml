@@ -1,0 +1,11 @@
+PeerOrgs:
+  - Name: Transport
+    Domain: transport.coldchain.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+        - peer0.transport.coldchain.com
+    Users:
+      Count: 1

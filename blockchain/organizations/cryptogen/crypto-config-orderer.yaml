@@ -1,0 +1,9 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: coldchain.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer
+        SANS:
+          - localhost
+          - orderer.coldchain.com
