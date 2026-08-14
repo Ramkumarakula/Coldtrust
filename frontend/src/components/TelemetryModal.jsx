@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Thermometer, AlertTriangle, Send } from 'lucide-react';
 
 export default function TelemetryModal({ isOpen, shipment, onClose, onSubmit }) {
@@ -134,3 +134,4 @@ export default function TelemetryModal({ isOpen, shipment, onClose, onSubmit }) 
     </div>
   );
 }
+

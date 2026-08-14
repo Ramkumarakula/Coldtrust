@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Package, Truck, CheckCircle2, AlertTriangle, Thermometer } from 'lucide-react';
 
 export default function KpiGrid({ shipments }) {
@@ -73,3 +73,4 @@ export default function KpiGrid({ shipments }) {
     </section>
   );
 }
+

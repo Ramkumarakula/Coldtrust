@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { X, History, ShieldCheck, Thermometer, MapPin, Clock, FileCode } from 'lucide-react';
 
 export default function AuditTimelineModal({ isOpen, shipment, onClose, fetchHistory }) {
@@ -191,3 +191,4 @@ export default function AuditTimelineModal({ isOpen, shipment, onClose, fetchHis
     </div>
   );
 }
+

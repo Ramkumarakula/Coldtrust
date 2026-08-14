@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, Package, Shield, Check } from 'lucide-react';
 
 export default function CreateShipmentModal({ isOpen, onClose, onSubmit }) {
@@ -182,3 +182,4 @@ export default function CreateShipmentModal({ isOpen, onClose, onSubmit }) {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Shield, Building, RefreshCw, Plus, Activity } from 'lucide-react';
 
 export default function Navbar({
@@ -19,12 +19,12 @@ export default function Navbar({
     <header className="glass-card mb-6 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
       {/* Brand & Platform */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center glow-cyan">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center ">
           <Shield className="w-6 h-6 text-slate-950 stroke-[2.5]" />
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-300 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold text-slate-100">
               ColdTrust
             </h1>
             <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-400 border border-cyan-800/50">
@@ -81,3 +81,4 @@ export default function Navbar({
     </header>
   );
 }
+
