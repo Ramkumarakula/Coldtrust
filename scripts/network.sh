@@ -2,7 +2,8 @@
 
 # Master CLI management script for ColdTrust Fabric Consortium Network
 export PATH=/home/ramkumar/projects/fabric-samples/bin:$PATH
-BLOCKCHAIN_DIR="${PWD}/blockchain"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BLOCKCHAIN_DIR="$(cd "${SCRIPT_DIR}/../blockchain" && pwd)"
 
 MODE=$1
 

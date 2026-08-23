@@ -8,7 +8,7 @@ CHANNEL_NAME="coldchain-channel"
 CC_NAME="coldchain"
 CC_SRC_PATH="../chaincode/shipment"
 CC_VERSION="1.1"
-CC_SEQUENCE="2"
+CC_SEQUENCE="1"
 CC_LABEL="${CC_NAME}_${CC_VERSION}"
 
 ORDERER_CA="/etc/hyperledger/fabric/orderer/tls/ca.crt"

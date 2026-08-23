@@ -7,8 +7,8 @@ export default function TransportNode({ shipments = [], onAcceptCustody, onSimul
   const activeMonitored = activeInTransit.length > 0 ? activeInTransit[0] : (shipments.length > 0 ? shipments[0] : null);
 
   const telemetryLogs = activeMonitored && activeMonitored.telemetryLogs ? activeMonitored.telemetryLogs : [
-    { timestamp: '14:02:11', type: 'UPDATE', message: 'TRK-882: Location updated (Lat: 40.71, Lon: -74.00)', isError: false },
-    { timestamp: '14:02:08', type: 'BREACH', message: 'SEN-B-404: Temp exceeded 4.0°C (Value: 4.8°C)', isError: true },
+    { timestamp: '14:02:11', type: 'UPDATE', message: 'TRK-882: Location updated (Lat: 40.71, Lon: -75.00)', isError: false },
+    { timestamp: '14:02:08', type: 'BREACH', message: 'SEN-B-404: Temp exceeded 5.0°C (Value: 4.8°C)', isError: true },
     { timestamp: '14:01:55', type: 'UPDATE', message: 'SEN-A-901: Humidity nominal (45%)', isError: false },
     { timestamp: '14:01:30', type: 'EVENT', message: 'PKG-102: Custody accepted by TransportMSP', isError: false },
   ];
@@ -57,7 +57,7 @@ export default function TransportNode({ shipments = [], onAcceptCustody, onSimul
           </h2>
           <div className="flex items-center gap-3">
             <span className="font-data-mono text-data-mono text-on-surface-variant">
-              Target SLA: {activeMonitored ? `${activeMonitored.minTemp}°C - ${activeMonitored.maxTemp}°C` : '2.0°C - 4.0°C'}
+              Target SLA: {activeMonitored ? `${activeMonitored.minTemp}°C - ${activeMonitored.maxTemp}°C` : '2.0°C - 5.0°C'}
             </span>
             <span className="flex items-center gap-1 font-label-caps text-label-caps text-primary bg-primary/10 px-2 py-1 rounded">
               <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse-live"></span> LIVE SENSOR

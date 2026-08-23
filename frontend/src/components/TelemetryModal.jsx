@@ -95,7 +95,7 @@ export default function TelemetryModal({ isOpen, shipment, onClose, onSubmit }) 
             />
             <div className="flex items-center justify-between text-[10px] text-slate-400 mt-1 font-mono">
               <span>0°C (Freezing)</span>
-              <span className="text-rose-400 font-bold">4.0°C (Max Threshold)</span>
+              <span className="text-rose-400 font-bold">{shipment.maxTemp}°C (Max Threshold)</span>
               <span>10°C (Spike)</span>
             </div>
           </div>

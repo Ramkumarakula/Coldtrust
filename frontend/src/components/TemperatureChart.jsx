@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { Thermometer, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
-export default function TemperatureChart({ telemetryLogs = [], minTemp = 2.0, maxTemp = 4.0, currentTemp }) {
+export default function TemperatureChart({ telemetryLogs = [], minTemp = 2.0, maxTemp = 5.0, currentTemp }) {
   // Construct data points from logs or synthesize points if logs are sparse
   const logs = telemetryLogs.length > 0
     ? telemetryLogs

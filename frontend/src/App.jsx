@@ -174,7 +174,7 @@ function AppContent() {
       <div className="flex flex-1">
         <SideNavBar activeOrg={selectedOrg} onPrimaryAction={handlePrimaryAction} />
 
-        <main className="flex-1 mt-12 lg:ml-64 p-container-padding overflow-y-auto overflow-x-hidden bg-background">
+        <main className="flex-1 mt-12 lg:ml-72 p-container-padding overflow-y-auto overflow-x-hidden bg-background">
           <Routes>
             <Route path="/" element={<Navigate to="/manufacturer" replace />} />
             <Route

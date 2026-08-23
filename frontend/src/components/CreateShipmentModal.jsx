@@ -11,7 +11,7 @@ export default function CreateShipmentModal({ isOpen, onClose, onSubmit }) {
     carrier: 'SwiftLogistics',
     recipient: 'MetroHospital',
     minTemp: 2.0,
-    maxTemp: 4.0,
+    maxTemp: 5.0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
