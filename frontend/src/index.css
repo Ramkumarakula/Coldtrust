@@ -1,204 +1,157 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
-:root {
-  /* Surfaces & Backgrounds - Dark Navy & Slate */
-  --bg-dark: #0b0f17;
-  --bg-surface: #131b2e;
-  --bg-surface-hover: #1a243b;
-  --bg-surface-active: #222e4a;
+@theme {
+  --color-primary: #8ed5ff;
+  --color-primary-container: #38bdf8;
+  --color-on-primary: #00354a;
+  --color-on-primary-container: #004965;
+  --color-primary-fixed: #c4e7ff;
+  --color-primary-fixed-dim: #7bd0ff;
+  --color-on-primary-fixed: #001e2c;
+  --color-on-primary-fixed-variant: #004c69;
 
-  /* Borders & Dividers */
-  --border-color: #1e293b;
-  --border-light: #28354d;
-  --border-focus: #0ea5e9;
+  --color-secondary: #b9c8de;
+  --color-secondary-container: #39485a;
+  --color-on-secondary: #233143;
+  --color-on-secondary-container: #a7b6cc;
+  --color-secondary-fixed: #d4e4fa;
+  --color-secondary-fixed-dim: #b9c8de;
+  --color-on-secondary-fixed: #0d1c2d;
+  --color-on-secondary-fixed-variant: #39485a;
 
-  /* Brand Accents - Restrained Ice-Blue / Cyan */
-  --accent-primary: #0ea5e9;
-  --accent-primary-hover: #0284c7;
-  --accent-cyan: #38bdf8;
+  --color-tertiary: #ffc176;
+  --color-tertiary-container: #f1a02b;
+  --color-on-tertiary: #472a00;
+  --color-on-tertiary-container: #613b00;
+  --color-tertiary-fixed: #ffddb8;
+  --color-tertiary-fixed-dim: #ffb960;
+  --color-on-tertiary-fixed: #2a1700;
+  --color-on-tertiary-fixed-variant: #653e00;
 
-  /* Status Indicators - Cold Chain Operations */
-  --status-created: #6366f1;
-  --status-created-bg: rgba(99, 102, 241, 0.12);
-  --status-created-border: rgba(99, 102, 241, 0.3);
+  --color-surface: #0b1326;
+  --color-surface-dim: #0b1326;
+  --color-surface-bright: #31394d;
+  --color-surface-variant: #2d3449;
+  --color-on-surface: #dae2fd;
+  --color-on-surface-variant: #bdc8d1;
+  --color-surface-container-lowest: #060e20;
+  --color-surface-container-low: #131b2e;
+  --color-surface-container: #171f33;
+  --color-surface-container-high: #222a3d;
+  --color-surface-container-highest: #2d3449;
 
-  --status-in-transit: #38bdf8;
-  --status-in-transit-bg: rgba(56, 189, 248, 0.12);
-  --status-in-transit-border: rgba(56, 189, 248, 0.3);
+  --color-background: #0b1326;
+  --color-on-background: #dae2fd;
+  --color-outline: #87929a;
+  --color-outline-variant: #3e484f;
 
-  --status-delivered: #10b981;
-  --status-delivered-bg: rgba(16, 185, 129, 0.12);
-  --status-delivered-border: rgba(16, 185, 129, 0.3);
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
 
-  --status-compromised: #ef4444;
-  --status-compromised-bg: rgba(239, 68, 68, 0.14);
-  --status-compromised-border: rgba(239, 68, 68, 0.4);
+  --color-inverse-surface: #dae2fd;
+  --color-inverse-on-surface: #283044;
+  --color-inverse-primary: #00668a;
 
-  /* Typography Colors - High Contrast WCAG AA */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-
-  /* Fonts */
-  --font-heading: 'Outfit', 'Inter', -apple-system, sans-serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
-
-  /* Border Radii */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --font-headline-table: 'Inter', sans-serif;
+  --font-display-center: 'Inter', sans-serif;
+  --font-data-mono: 'JetBrains Mono', monospace;
+  --font-body-dense: 'Inter', sans-serif;
+  --font-label-caps: 'Inter', sans-serif;
+  --font-body-standard: 'Inter', sans-serif;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
-  font-family: var(--font-body);
+  background-color: #0b1326;
+  color: #dae2fd;
+  font-family: 'Inter', sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.5;
+  margin: 0;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-dark);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-light);
-  border-radius: var(--radius-sm);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-primary);
+.px-container-padding {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  letter-spacing: -0.01em;
+.p-container-padding {
+  padding: 20px;
 }
 
-/* Enterprise Card Surfaces */
-.enterprise-card,
-.glass-card {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.enterprise-card:hover,
-.glass-card:hover {
-  border-color: var(--border-light);
-}
-
-/* Removed web3 glow effects in favor of clean alerts */
-.pulse-alert {
-  border-color: var(--status-compromised) !important;
-}
-
-.live-indicator {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: var(--status-delivered);
-  border-radius: 50%;
-}
-
-/* Status Badges */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  border-radius: var(--radius-md);
-  font-size: 0.7rem;
+.font-display-center {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-family: var(--font-mono);
+  line-height: 32px;
+  letter-spacing: -0.02em;
 }
 
-.badge-CREATED {
-  background: var(--status-created-bg);
-  color: #818cf8;
-  border: 1px solid var(--status-created-border);
-}
-
-.badge-IN_TRANSIT {
-  background: var(--status-in-transit-bg);
-  color: #38bdf8;
-  border: 1px solid var(--status-in-transit-border);
-}
-
-.badge-COMPROMISED {
-  background: var(--status-compromised-bg);
-  color: #f87171;
-  border: 1px solid var(--status-compromised-border);
-}
-
-.badge-DELIVERED {
-  background: var(--status-delivered-bg);
-  color: #34d399;
-  border: 1px solid var(--status-delivered-border);
-}
-
-/* Modal Backdrop */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(4, 7, 13, 0.82);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-/* Buttons */
-.btn-primary {
-  background: var(--accent-primary);
-  color: #ffffff;
+.font-headline-table {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
   font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.15s ease;
-}
-.btn-primary:hover {
-  background: var(--accent-primary-hover);
+  line-height: 24px;
 }
 
-.btn-secondary {
-  background: var(--bg-surface-hover);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
+.font-body-standard {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.font-body-dense {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.font-data-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
   font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  line-height: 16px;
 }
-.btn-secondary:hover {
-  background: var(--bg-surface-active);
-  border-color: var(--border-light);
+
+.font-label-caps {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-live {
+  animation: pulse-live 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.sparkline {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
 }
