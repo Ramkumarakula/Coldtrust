@@ -7,6 +7,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { setupSwagger } from './config/swagger';
 import shipmentRoutes from './routes/shipment.routes';
 import healthRoutes from './routes/health.routes';
+import authRoutes from './routes/auth.routes';
 
 const app: Express = express();
 
@@ -22,6 +23,7 @@ setupSwagger(app);
 
 // API Routes
 app.use('/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/shipments', shipmentRoutes);
 
 // Global Error Handling Middleware

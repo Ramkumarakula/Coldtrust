@@ -5,7 +5,8 @@
   "main": "dist/simulator.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src/simulator.ts"
+    "start": "ts-node src/simulator.ts",
+    "auth:start": "ts-node src/auth_simulator.ts"
   },
   "dependencies": {
     "axios": "^1.6.8",

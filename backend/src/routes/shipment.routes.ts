@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { shipmentController } from '../controllers/shipment.controller';
+import { authenticateToken } from '../middleware/authMiddleware';
 
 const router = Router();
+
+// Protect all shipment routes with JWT authentication middleware
+router.use(authenticateToken);
 
 router.post('/', shipmentController.createShipment);
 router.get('/', shipmentController.getAllShipments);

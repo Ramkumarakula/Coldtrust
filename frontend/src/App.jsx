@@ -10,12 +10,21 @@ import CreateShipmentModal from './components/CreateShipmentModal.jsx';
 import TelemetryModal from './components/TelemetryModal.jsx';
 import AuditTimelineModal from './components/AuditTimelineModal.jsx';
 import NotificationToast from './components/NotificationToast.jsx';
+import LoginPage from './components/LoginPage.jsx';
 
 const API_BASE = 'http://localhost:3000';
 
-function AppContent() {
+function getAuthHeaders() {
+  const token = localStorage.getItem('coldtrust_jwt_token');
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
+function AppContent({ currentUser, onLogout }) {
   const [shipments, setShipments] = useState([]);
-  const [selectedOrg, setSelectedOrg] = useState('Manufacturer');
+  const [selectedOrg, setSelectedOrg] = useState(currentUser?.role || 'Manufacturer');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -35,7 +44,13 @@ function AppContent() {
   const fetchShipments = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      const res = await fetch(API_BASE + '/api/shipments');
+      const res = await fetch(API_BASE + '/api/shipments', {
+        headers: getAuthHeaders(),
+      });
+      if (res.status === 401) {
+        onLogout();
+        return;
+      }
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setShipments(json.data);
@@ -45,7 +60,7 @@ function AppContent() {
     } finally {
       setIsRefreshing(false);
     }
-  }, []);
+  }, [onLogout]);
 
   useEffect(() => {
     fetchShipments();
@@ -57,7 +72,7 @@ function AppContent() {
     try {
       const res = await fetch(API_BASE + '/api/shipments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(formData),
       });
       const json = await res.json();
@@ -76,6 +91,7 @@ function AppContent() {
     try {
       const res = await fetch(API_BASE + '/api/shipments/' + id + '/accept', {
         method: 'PUT',
+        headers: getAuthHeaders(),
       });
       const json = await res.json();
       if (!json.success) {
@@ -93,7 +109,7 @@ function AppContent() {
     try {
       const res = await fetch(API_BASE + '/api/shipments/' + id + '/telemetry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(telemetryData),
       });
       const json = await res.json();
@@ -117,6 +133,7 @@ function AppContent() {
     try {
       const res = await fetch(API_BASE + '/api/shipments/' + id + '/receive', {
         method: 'PUT',
+        headers: getAuthHeaders(),
       });
       const json = await res.json();
       if (!json.success) {
@@ -132,7 +149,9 @@ function AppContent() {
 
   const fetchShipmentHistory = async (id) => {
     try {
-      const res = await fetch(API_BASE + '/api/shipments/' + id + '/history');
+      const res = await fetch(API_BASE + '/api/shipments/' + id + '/history', {
+        headers: getAuthHeaders(),
+      });
       const json = await res.json();
       if (json.success) {
         return json.data;
@@ -163,6 +182,21 @@ function AppContent() {
   return (
     <div className="bg-surface text-on-surface font-body-standard antialiased min-h-screen flex flex-col overflow-x-hidden">
       <NotificationToast toast={toast} onClose={() => setToast(null)} />
+
+      {/* Global Auth Status & Logout Pill */}
+      <div className="fixed top-2 right-4 z-[60] flex items-center gap-2 bg-surface-container-high/90 backdrop-blur px-3 py-1 rounded-full border border-outline-variant text-xs shadow-lg">
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span className="text-on-surface font-medium">
+          {currentUser?.name || currentUser?.username} ({currentUser?.role})
+        </span>
+        <button
+          onClick={onLogout}
+          className="ml-2 px-2 py-0.5 rounded bg-error-container/20 text-error-container hover:bg-error-container/40 text-[10px] font-semibold cursor-pointer transition-colors"
+          title="Sign out of ColdTrust"
+        >
+          Sign Out
+        </button>
+      </div>
 
       <TopNavBar
         selectedOrg={selectedOrg}
@@ -245,9 +279,36 @@ function AppContent() {
 }
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('coldtrust_user');
+      const token = localStorage.getItem('coldtrust_jwt_token');
+      if (savedUser && token) {
+        return JSON.parse(savedUser);
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem('coldtrust_jwt_token');
+    localStorage.removeItem('coldtrust_user');
+    setCurrentUser(null);
+  };
+
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+  };
+
+  if (!currentUser) {
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <Router>
-      <AppContent />
+      <AppContent currentUser={currentUser} onLogout={handleLogout} />
     </Router>
   );
 }
